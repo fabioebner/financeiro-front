@@ -32,7 +32,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary">Entrar</v-btn>
+                <v-btn color="primary" @click='logar()'>Entrar</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -50,6 +50,24 @@ export default {
   }),
   props: {
     source: String,
+  },
+  methods: {
+    logar() {
+      let data = JSON.stringify({ username: 'cartorio@teste.com.br', password: '1234' });
+      // this.axios.get('http://localhost:8080/usuario/', data, {headers: {'Access-Control-Allow-Origin': '*'}}).then((response) => {
+        this.axios.get('http://localhost:8080/usuario', {
+          headers: {'Access-Control-Allow-Origin': '*'},
+          auth: {
+            'username': 'cartorio@teste.com.br',
+            'password': '1234'
+          },          
+          }).then((response) => {
+        console.log(response.data);
+        // this.axios.get('http://localhost:8080/usuario/').then(function(){
+        //   console.log('foi porra');
+        // });
+      });
+    },
   },
 };
 </script>
