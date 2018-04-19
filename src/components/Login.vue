@@ -24,9 +24,9 @@
               <v-card-text>
                 <v-form>
                   <v-text-field prepend-icon="person" name="login" label="Usuário"
-                   type="text"></v-text-field>
+                  v-model='username' type="text"></v-text-field>
                   <v-text-field prepend-icon="lock" name="password" label="Senha"
-                   id="password" type="password"></v-text-field>
+                   v-model='password' id="password" type="password"></v-text-field>
                    <v-checkbox label="Lembrar senha" v-model="checkbox"></v-checkbox>
                 </v-form>
               </v-card-text>
@@ -47,25 +47,21 @@ export default {
   data: () => ({
     drawer: null,
     checkbox: false,
+    username: '',
+    password: '',
   }),
   props: {
     source: String,
   },
   methods: {
     logar() {
-      let data = JSON.stringify({ username: 'cartorio@teste.com.br', password: '1234' });
-      // this.axios.get('http://localhost:8080/usuario/', data, {headers: {'Access-Control-Allow-Origin': '*'}}).then((response) => {
-        this.axios.get('http://localhost:8080/usuario', {
-          headers: {'Access-Control-Allow-Origin': '*'},
-          auth: {
-            'username': 'cartorio@teste.com.br',
-            'password': '1234'
-          },          
-          }).then((response) => {
+      this.axios.get('http://localhost:8080/usuario/', {
+        auth: {
+          username: this.username,
+          password: this.password,
+        },
+      }).then((response) => {
         console.log(response.data);
-        // this.axios.get('http://localhost:8080/usuario/').then(function(){
-        //   console.log('foi porra');
-        // });
       });
     },
   },
