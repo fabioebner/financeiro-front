@@ -66,8 +66,10 @@ export default {
           'Content-Type': 'application/json',
         },
       },
-      ).then((response) => {
+      ).then((response) => {        
         console.log(response.headers.authorization);
+      }).catch((error) => {
+        console.lo(error)
       });
     },
   },
