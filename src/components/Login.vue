@@ -47,21 +47,27 @@ export default {
   data: () => ({
     drawer: null,
     checkbox: false,
-    username: '',
-    password: '',
+    username: 'cartorio@teste.com.br',
+    password: '1234',
   }),
   props: {
     source: String,
   },
   methods: {
     logar() {
-      this.axios.get('http://localhost:8080/usuario/', {
-        auth: {
-          username: this.username,
-          password: this.password,
+      this.axios.post('http://localhost:8585/login', {
+        email: this.username,
+        senha: this.password,
+      },
+      {
+        withCredentials: false,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-      }).then((response) => {
-        console.log(response.data);
+      },
+      ).then((response) => {
+        console.log(response.headers.authorization);
       });
     },
   },
