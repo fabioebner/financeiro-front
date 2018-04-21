@@ -85,10 +85,8 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height>
-        <v-layout justify-center align-center>
-          <router-view name="principal"></router-view>
-        </v-layout>
+      <v-container>
+          <router-view></router-view>
       </v-container>
     </v-content>
     <v-btn
@@ -107,6 +105,7 @@
 
 <script>
 export default {
+  name: 'Principal',
   created() {
     this.axios.get('http://localhost:8585/login/bootstrap/', {
       headers: {
@@ -120,7 +119,7 @@ export default {
   data: () => ({
     drawer: null,
     items: [
-      { icon: 'contacts', text: 'Frente de Caixa', component: 'Login' },
+      { icon: 'contacts', text: 'Frente de Caixa', component: 'FrenteCaixa' },
       { icon: 'history', text: 'Expedição', component: 'Login' },
       { icon: 'content_copy', text: '2º Via de Recibos' },
       { icon: 'money_off', text: 'Adicionar Despesas' },

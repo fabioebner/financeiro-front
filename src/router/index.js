@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Login from '@/components/Login';
 import Principal from '@/components/Principal';
+import FrenteCaixa from '@/components/FrenteCaixa';
 
 Vue.use(Router);
 
@@ -12,6 +13,13 @@ export default new Router({
       path: '/',
       name: 'Principal',
       component: Principal,
+      children: [
+        {
+          path: '/frentecaixa',
+          name: 'FrenteCaixa',
+          component: FrenteCaixa,
+        },
+      ],
     },
     {
       path: '/login',
