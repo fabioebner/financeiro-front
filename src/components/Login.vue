@@ -55,6 +55,7 @@ export default {
   },
   methods: {
     logar() {
+      // var myVue = this.$vuetify;
       this.axios.post('http://localhost:8585/login', {
         email: this.username,
         senha: this.password,
@@ -66,10 +67,10 @@ export default {
           'Content-Type': 'application/json',
         },
       },
-      ).then((response) => {        
-        console.log(response.headers.authorization);
-      }).catch((error) => {
-        console.lo(error)
+      ).then((response) => {
+        this.$vuetify.aut = response.headers.authorization;
+        this.$router.push({ name: 'Principal' });
+        // console.log(this.$vuetify.goTo('Principal'));
       });
     },
   },
