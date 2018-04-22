@@ -116,7 +116,7 @@ export default {
     // console.log(this.$store.state.count);
   },
   data: () => ({
-    drawer: null,
+    drawer: false,
     items: [
       { icon: 'contacts', text: 'Frente de Caixa', component: 'FrenteCaixa' },
       { icon: 'history', text: 'Expedição', component: 'Login' },
