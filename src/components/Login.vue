@@ -34,6 +34,7 @@
                 Usuário ou Senha inválida.
               </v-alert>
               <v-card-actions>
+                <v-progress-circular v-show="logando" indeterminate color="primary"></v-progress-circular>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click='logar()'>Entrar</v-btn>
               </v-card-actions>
@@ -50,6 +51,7 @@ export default {
   data: () => ({
     drawer: null,
     alert: false,
+    logando: false,
     checkbox: false,
     username: 'cartorio@teste.com.br',
     password: '1234',
@@ -59,6 +61,7 @@ export default {
   },
   methods: {
     logar() {
+      this.logando = true;
       this.axios.defaults.baseURL = 'http://localhost:8585';
       // var myVue = this.$vuetify;
       this.axios.post('/login', {
@@ -74,7 +77,7 @@ export default {
       },
       ).then((response) => {
         window.logado = true;
-
+        this.logando = false;
         // eslint-disable-next-line
         this.axios.defaults.headers.common['Authorization'] = response.headers.authorization;
         // this.$vuetify.auth = response.headers.authorization;
@@ -82,6 +85,7 @@ export default {
         // console.log(this.$vuetify.goTo('Principal'));
       },
       ).catch((error) => {
+        this.logando = false;
         if (error.response.status === 403) {
           this.alert = true;
         }
