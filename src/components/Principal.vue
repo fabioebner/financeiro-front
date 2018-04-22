@@ -107,11 +107,7 @@
 export default {
   name: 'Principal',
   created() {
-    this.axios.get('http://localhost:8585/login/bootstrap/', {
-      headers: {
-        authorization: this.$vuetify.aut,
-      },
-    }).then((response) => {
+    this.axios.get('/login/bootstrap/').then((response) => {
       this.$store.commit('setBootstrap', response.data);
     });
     // console.log(this.$store.state.count);

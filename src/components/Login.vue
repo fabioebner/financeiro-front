@@ -55,8 +55,9 @@ export default {
   },
   methods: {
     logar() {
+      this.axios.defaults.baseURL = 'http://localhost:8585';
       // var myVue = this.$vuetify;
-      this.axios.post('http://localhost:8585/login', {
+      this.axios.post('/login', {
         email: this.username,
         senha: this.password,
       },
@@ -68,7 +69,9 @@ export default {
         },
       },
       ).then((response) => {
-        this.$vuetify.aut = response.headers.authorization;
+        // eslint-disable-next-line
+        this.axios.defaults.headers.common['Authorization'] = response.headers.authorization;
+        // this.$vuetify.auth = response.headers.authorization;
         this.$router.push({ name: 'Principal' });
         // console.log(this.$vuetify.goTo('Principal'));
       });
