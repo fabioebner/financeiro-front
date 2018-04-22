@@ -19,20 +19,32 @@
       :rows-per-page-text="linhasPorPagina"
     >
       <template slot="items" slot-scope="props">
-        <td class="text-xs-left">{{ props.item.id }}</td>
-        <td class="text-xs-left">{{ props.item.apresentante }}</td>
-        <td class="text-xs-center">{{ props.item.criado }}</td>
-        <td class="text-xs-center">{{ props.item.identificacao }}</td>
-        <td class="text-xs-center">{{ props.item.apresentanteDocumento }}</td>
-        <td class="text-xs-center">{{ props.item.valor }}</td>
-        <td class="text-xs-center">{{ props.item.pagoAnteriormente }}</td>
-        <td class="text-xs-center">{{ Number(props.item.valor) -
-          Number(props.item.pagoAnteriormente)}}</td>
+        <tr @click="dialog = true">
+          <td class="text-xs-left">{{ props.item.id }}</td>
+          <td class="text-xs-left">{{ props.item.apresentante }}</td>
+          <td class="text-xs-center">{{ props.item.criado }}</td>
+          <td class="text-xs-center">{{ props.item.identificacao }}</td>
+          <td class="text-xs-center">{{ props.item.apresentanteDocumento }}</td>
+          <td class="text-xs-center">{{ props.item.valor }}</td>
+          <td class="text-xs-center">{{ props.item.pagoAnteriormente }}</td>
+          <td class="text-xs-center">{{ Number(props.item.valor) -
+            Number(props.item.pagoAnteriormente)}}</td>
+        </tr>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         Nenhum pedido encontrado para o filtro:  "{{ search }}".
       </v-alert>
     </v-data-table>
+
+    <v-dialog v-model="dialog" width="800px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Detalhes do Pedido</span>
+        </v-card-title>
+        <v-card-text>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -45,6 +57,7 @@ export default {
   },
   data() {
     return {
+      dialog: false,
       search: '',
       mensagem: 'Nenhum Pedido Encontrado',
       linhasPorPagina: 'Pedidos por página',
