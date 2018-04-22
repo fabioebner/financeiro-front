@@ -78,7 +78,10 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon>
-        <v-icon>notifications</v-icon>
+        <v-badge >
+          <span slot="badge">5</span>
+          <v-icon>notifications</v-icon>
+        </v-badge>
       </v-btn>
       <v-btn icon>
         <v-icon>apps</v-icon>

@@ -30,6 +30,9 @@
                    <v-checkbox label="Lembrar senha" v-model="checkbox"></v-checkbox>
                 </v-form>
               </v-card-text>
+              <v-alert type="error" dismissible v-model="alert">
+                Usuário ou Senha inválida.
+              </v-alert>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click='logar()'>Entrar</v-btn>
@@ -46,6 +49,7 @@ export default {
   name: 'Login',
   data: () => ({
     drawer: null,
+    alert: false,
     checkbox: false,
     username: 'cartorio@teste.com.br',
     password: '1234',
@@ -74,6 +78,11 @@ export default {
         // this.$vuetify.auth = response.headers.authorization;
         this.$router.push({ name: 'Principal' });
         // console.log(this.$vuetify.goTo('Principal'));
+      },
+      ).catch((error) => {
+        if (error.response.status === 403) {
+          this.alert = true;
+        }
       });
     },
   },
