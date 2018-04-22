@@ -16,6 +16,18 @@ Vue.use(Vuetify);
 Vue.use(VueAxios, axios);
 Vue.use(Vuex);
 
+router.beforeEach((to, from, next) => {
+  if (to.name === 'Login') {
+    next();
+  } else if (window.logado === undefined) {
+    next({ name: 'Login' });
+  } else if (window.logado) {
+    next();
+  } else {
+    next({ name: 'Login' });
+  }
+});
+
 // Vue.axios.get(api).then((response) => {
 //   console.log(response.data)
 // })

@@ -73,7 +73,8 @@ export default {
         },
       },
       ).then((response) => {
-        this.$store.commit('setLogin', true);
+        window.logado = true;
+
         // eslint-disable-next-line
         this.axios.defaults.headers.common['Authorization'] = response.headers.authorization;
         // this.$vuetify.auth = response.headers.authorization;
