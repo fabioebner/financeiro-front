@@ -34,7 +34,8 @@
                 Usuário ou Senha inválida.
               </v-alert>
               <v-card-actions>
-                <v-progress-circular v-show="logando" indeterminate color="primary"></v-progress-circular>
+                <v-progress-circular v-show="logando" indeterminate color="primary">
+                </v-progress-circular>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click='logar()'>Entrar</v-btn>
               </v-card-actions>
