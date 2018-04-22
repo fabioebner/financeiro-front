@@ -6,15 +6,21 @@ Vue.use(Vuex);
 const state = {
   count: 5,
   bootstrap: {},
+  logado: false,
 };
 
 const getters = {
-
+  isLogado() {
+    return state.logado;
+  },
 };
 
 const mutations = {
   setBootstrap(bootstrap, payload) {
     state.bootstrap = payload;
+  },
+  setLogin(logado, icLogado) {
+    state.logado = icLogado;
   },
 };
 

@@ -9,6 +9,16 @@
 
 export default {
   name: 'App',
+  created() {
+    this.$router.beforeEach((to, from, next) => {
+      if (this.$store.getters.isLogado) {
+        next();
+      } else {
+        console.log('para para para para');
+        debugger;
+      }
+    });
+  },
 };
 </script>
 

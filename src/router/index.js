@@ -10,7 +10,7 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
+      path: '/principal',
       name: 'Principal',
       component: Principal,
       children: [
@@ -25,6 +25,10 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login,
+    },
+    {
+      path: '/',
+      redirect: { name: 'Login' },
     },
   ],
 });
