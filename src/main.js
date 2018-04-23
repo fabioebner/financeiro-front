@@ -4,10 +4,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
 import axios from 'axios';
+import moment from 'moment';
 import VueAxios from 'vue-axios';
 import App from './App';
 import router from './router';
 import store from './store/store';
+
 
 axios.cors = true;
 
@@ -15,6 +17,7 @@ Vue.config.productionTip = false;
 Vue.use(Vuetify);
 Vue.use(VueAxios, axios);
 Vue.use(Vuex);
+Vue.prototype.moment = moment;
 
 router.beforeEach((to, from, next) => {
   if (to.name === 'Login') {
