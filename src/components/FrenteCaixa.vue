@@ -83,41 +83,18 @@
   </v-card>
   </v-flex>
   <v-flex xs5>
-      <v-layout row wrap>
-          <v-flex xs12>
-            <v-card color="grey lighten-5" class="black--text text-md-center">
-              <v-card-text  class=" text-md-center">
-                <div class="headline ">Total a Receber</div>
-              </v-card-text>
-              <v-card-text class="red--text headline">
-                R$ 0,00
-                <br>
-                <v-text-field  prefix="$" label="Desconto"></v-text-field>
-              </v-card-text>
-              <v-card-text  class=" text-md-center">
-                <div class="headline ">Formas de Pagamento</div>
-              </v-card-text>
-              <v-card-text>
-                <v-container grid-list-md>
-                  <v-layout wrap>
-                <v-flex xs12 sm6 md4>
-                  <v-text-field  prefix="$" label="Desconto"></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6 md8>
-                </v-flex>
-                  </v-layout>
-                </v-container>
-
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
+      <Pagamento :valorTotal='totalGeral'></Pagamento>
   </v-flex>
   </v-layout>
   </v-container>
 </template>
 <script>
+import Pagamento from './Pagamento';
+
 export default {
+  components: {
+    Pagamento,
+  },
   created() {
     const self = this;
     this.axios.get('/pedido/').then((response) => {
@@ -125,12 +102,13 @@ export default {
     });
   },
   watch: {
+    // eslint-disable-next-line
     selected: function () {
       this.devolucoesSelecionados = [];
       this.recebimentosSelecionados = [];
       this.totalRecebSelecionados = 0;
-      this.totalDevSelecionado
-    = 0;
+      this.totalDevSelecionado = 0;
+      this.totalGeral = 0;
       this.selected.forEach((pedido) => {
         if ((Number(pedido.valor) - Number(pedido.pagoAnteriormente)) < 0) {
           this.devolucoesSelecionados.push(pedido);
@@ -143,6 +121,7 @@ export default {
             (Number(pedido.valor) - Number(pedido.pagoAnteriormente));
         }
       });
+      this.totalGeral = Number(this.totalRecebSelecionados) - Number(this.totalDevSelecionado);
     },
   },
   data() {
@@ -151,6 +130,7 @@ export default {
       devolucoesSelecionados: [],
       totalRecebSelecionados: 0,
       totalDevSelecionado: 0,
+      totalGeral: 0,
       selected: [],
       dialog: false,
       search: '',
