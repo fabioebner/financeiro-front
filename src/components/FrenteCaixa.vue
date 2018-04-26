@@ -65,7 +65,7 @@
                   <strong class="red--text headlinefont">R$ {{totalDevSelecionado}}</strong>
                 </v-flex>
                 <v-flex xs5>
-                <strong class="green--text headline">R$ 0,00</strong>
+                <strong class="green--text headline">R$ {{totalGeral}}</strong>
                 </v-flex>
             </v-layout>
           </v-container>
