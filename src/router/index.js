@@ -15,7 +15,7 @@ export default new Router({
       component: Principal,
       children: [
         {
-          path: '/frentecaixa',
+          path: 'frentecaixa',
           name: 'FrenteCaixa',
           component: FrenteCaixa,
         },
