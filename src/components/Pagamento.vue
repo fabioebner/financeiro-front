@@ -7,6 +7,7 @@
   <v-select
   :items="formaPagamentoList"
   item-text="nome"
+  autocomplete
   v-model="formPagamentoSelecionada"
   item-value="id"
   placeholder="Selecione uma Forma de Pagamento"
@@ -16,11 +17,10 @@
     Adicionar
   </v-btn>
     <v-alert type="error" dismissible v-model="alert">
-      favor preencher todos os campos
+      {{mensagemAlerta}}
     </v-alert>
     <v-list two-line>
       <template v-for="(item, index) in formPagamentoAdicionada">
-        <v-subheader :key="item.header">{{ item.header }}</v-subheader>
         <v-list-tile avatar :key="item.title" @click.stop>
           <v-list-tile-avatar>
               <v-icon class="green lighten-1 white--tex">monetization_on</v-icon>
@@ -51,11 +51,12 @@ export default {
   props: ['valorTotal'],
   data: () => ({
     formPagamentoSelecionada: null,
-    totalAdicionado: null,
-    valorInformado: null,
+    totalAdicionado: 0,
+    valorInformado: 0,
     formaPagamentoList: [],
     formPagamentoAdicionada: [],
     alert: false,
+    mensagemAlerta: 'favor preencher todos os campos',
   }),
   computed: {
     saldo() {
@@ -65,19 +66,37 @@ export default {
   methods: {
     removerFormaPagamentoAdicionada(index) {
       this.formPagamentoAdicionada.splice(index, 1);
+      this.recalcularValor();
+    },
+    recalcularValor() {
+      this.totalAdicionado = 0;
+      this.formPagamentoAdicionada.forEach((pagamentoAdicionado) => {
+        this.totalAdicionado = Number(this.totalAdicionado) +
+        Number(pagamentoAdicionado.valorAdicionado);
+      });
     },
     /* eslint no-param-reassign: ["error", { "props": false }] */
     adicionarFormaPagamento() {
-      if (this.formPagamentoSelecionada) {
-        console.log('selecionado id ', this.formPagamentoSelecionada +
-        ' - ' + this.valorInformado);
-        this.formaPagamentoList.forEach((formaPagamento) => {
-          if (formaPagamento.id === this.formPagamentoSelecionada) {
-            formaPagamento.valorAdicionado = this.valorInformado;
-            this.formPagamentoAdicionada.push(formaPagamento);
-          }
-        });
+      this.alert = false;
+      if (this.valorInformado <= this.saldo) {
+        if (this.formPagamentoSelecionada && Number(this.valorInformado) > Number(0)) {
+          this.formaPagamentoList.forEach((formaPagamento) => {
+            if (formaPagamento.id === this.formPagamentoSelecionada) {
+              const novaFormaPagamento = JSON.parse(JSON.stringify(formaPagamento));
+              novaFormaPagamento.valorAdicionado = this.valorInformado;
+              this.formPagamentoAdicionada.push(novaFormaPagamento);
+
+              this.valorInformado = 0;
+              this.formPagamentoSelecionada = null;
+            }
+          });
+          this.recalcularValor();
+        } else {
+          this.mensagemAlerta = 'favor preencher todos os campos';
+          this.alert = true;
+        }
       } else {
+        this.mensagemAlerta = 'valor não pode ser adicionado';
         this.alert = true;
       }
     },

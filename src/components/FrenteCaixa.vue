@@ -49,9 +49,10 @@
           <v-container grid-list-md >
             <v-layout row wrap class="black--text text-xs-center">
                 <v-flex xs7>
-                  <strong class="green--text headlinefont">{{recebimentosSelecionados.length}}
+                  <strong class="green--text headlinefont">{{selecionadoRecebimento.length}}
                     </strong> recebimentos selecionados no total de
-                    <strong class="green--text headlinefont">R$ {{totalRecebSelecionados}}</strong>
+                    <strong class="green--text headlinefont">R$
+                      {{vlSelecionadoRecebimento.toString()}}</strong>
                 </v-flex>
                 <v-flex xs5>
                   Total a receber / devolver
@@ -60,12 +61,13 @@
             <v-layout row wrap  class="black--text text-xs-center">
                 <v-flex xs7>
                   <strong class="red--text headlinefont">
-                    {{devolucoesSelecionados.length}}
+                    {{selecionadoDevolucao.length}}
                   </strong> devoluções selecionadas no total de
-                  <strong class="red--text headlinefont">R$ {{totalDevSelecionado}}</strong>
+                  <strong class="red--text headlinefont">R$
+                    {{vlSelecionadoDevolucao.toString()}}</strong>
                 </v-flex>
                 <v-flex xs5>
-                <strong class="green--text headline">R$ {{totalGeral}}</strong>
+                <strong class="green--text headline">R$ {{vlTotalGeral.toString()}}</strong>
                 </v-flex>
             </v-layout>
           </v-container>
@@ -83,13 +85,16 @@
   </v-card>
   </v-flex>
   <v-flex xs5>
-      <Pagamento :valorTotal='totalGeral'></Pagamento>
+      <Pagamento :valorTotal='vlTotalGeral'></Pagamento>
   </v-flex>
   </v-layout>
   </v-container>
 </template>
 <script>
+import { BigNumber } from 'bignumber.js';
 import Pagamento from './Pagamento';
+
+BigNumber.config({ DECIMAL_PLACES: 13, ROUNDING_MODE: 2 });
 
 export default {
   components: {
@@ -104,33 +109,34 @@ export default {
   watch: {
     // eslint-disable-next-line
     selected: function () {
-      this.devolucoesSelecionados = [];
-      this.recebimentosSelecionados = [];
-      this.totalRecebSelecionados = 0;
-      this.totalDevSelecionado = 0;
-      this.totalGeral = 0;
+      this.selecionadoDevolucao = [];
+      this.selecionadoRecebimento = [];
+      this.vlSelecionadoRecebimento = new BigNumber(0);
+      this.vlSelecionadoDevolucao = new BigNumber(0);
+      this.vlTotalGeral = new BigNumber(0);
       this.selected.forEach((pedido) => {
-        if ((Number(pedido.valor) - Number(pedido.pagoAnteriormente)) < 0) {
-          this.devolucoesSelecionados.push(pedido);
-          this.totalDevSelecionado
-        = Number(this.totalRecebSelecionados) +
-            (Number(pedido.valor) - Number(pedido.pagoAnteriormente));
+        const valorPedidoAtual = new BigNumber(pedido.valor);
+        const valorPedidoAnterior = new BigNumber(pedido.pagoAnteriormente);
+        if (valorPedidoAtual.minus(valorPedidoAnterior) < 0) {
+          this.selecionadoDevolucao.push(pedido);
+          this.vlSelecionadoDevolucao =
+            this.vlSelecionadoRecebimento.plus(valorPedidoAtual.minus(valorPedidoAnterior));
         } else {
-          this.recebimentosSelecionados.push(pedido);
-          this.totalRecebSelecionados = Number(this.totalRecebSelecionados) +
-            (Number(pedido.valor) - Number(pedido.pagoAnteriormente));
+          this.selecionadoRecebimento.push(pedido);
+          this.vlSelecionadoRecebimento =
+            this.vlSelecionadoRecebimento.plus(valorPedidoAtual.minus(valorPedidoAnterior));
         }
       });
-      this.totalGeral = Number(this.totalRecebSelecionados) - Number(this.totalDevSelecionado);
+      this.vlTotalGeral = this.vlSelecionadoRecebimento.minus(this.vlSelecionadoDevolucao.abs());
     },
   },
   data() {
     return {
-      recebimentosSelecionados: [],
-      devolucoesSelecionados: [],
-      totalRecebSelecionados: 0,
-      totalDevSelecionado: 0,
-      totalGeral: 0,
+      selecionadoRecebimento: [],
+      selecionadoDevolucao: [],
+      vlSelecionadoRecebimento: new BigNumber(0),
+      vlSelecionadoDevolucao: new BigNumber(0),
+      vlTotalGeral: new BigNumber(0),
       selected: [],
       dialog: false,
       search: '',
@@ -151,107 +157,7 @@ export default {
         { text: 'Antes (R$)', value: 'pagoAnteriormente', sortable: false },
         { text: 'Saldo (R$)', value: 'saldo', sortable: false },
       ],
-      items: [
-        {
-          value: false,
-          id: 1,
-          atendente: 'Fabio Alves',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-44',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 2,
-          atendente: 'Fabio Alves de Araujo',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-123',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 3,
-          atendente: 'Fabio Alves Ebner',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-233',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 4,
-          atendente: 'Fabio Alves',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-55',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 5,
-          atendente: 'Fabio Alves',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-233',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 1,
-          atendente: 'Fabio Alves',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-233',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 1,
-          atendente: 'Fabio Alves',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-233',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 1,
-          atendente: 'Fabio Alves',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-233',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-        {
-          value: false,
-          id: 1,
-          atendente: 'Fabio Alves',
-          data: '10/10/2010',
-          identificacao: '123sd23',
-          protocolo: 'TD-233',
-          total: '23,23',
-          pagoAnteriormente: '23,23',
-          saldo: '23,23',
-        },
-      ],
+      items: [],
     };
   },
 };
