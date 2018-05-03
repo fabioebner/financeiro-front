@@ -23,22 +23,24 @@
           select-all
           :rows-per-page-text="linhasPorPagina">
           <template slot="items" slot-scope="props">
-            <td>
-              <v-checkbox
-                primary
-                hide-details
-                v-model="props.selected"
-              ></v-checkbox>
-            </td>
-            <td class="text-xs-left">{{ props.item.id }}</td>
-            <td class="text-xs-left">{{ props.item.apresentante }}</td>
-            <td class="text-xs-center">{{ moment(props.item.criado).format('DD/MM/YY') }}</td>
-            <td class="text-xs-center">{{ props.item.identificacao }}</td>
-            <td class="text-xs-center">{{ props.item.apresentanteDocumento }}</td>
-            <td class="text-xs-center">{{ props.item.valor }}</td>
-            <td class="text-xs-center">{{ props.item.pagoAnteriormente }}</td>
-            <td class="text-xs-center">{{ Number(props.item.valor) -
-              Number(props.item.pagoAnteriormente)}}</td>
+            <tr :style="{'color': ((Number(props.item.valor) - Number(props.item.pagoAnteriormente))<0) ? 'red' : 'black'}" >
+              <td>
+                <v-checkbox
+                  primary
+                  hide-details
+                  v-model="props.selected"
+                ></v-checkbox>
+              </td>
+              <td class="text-xs-left">{{ props.item.id }}</td>
+              <td class="text-xs-left">{{ props.item.apresentante }}</td>
+              <td class="text-xs-center">{{ moment(props.item.criado).format('DD/MM/YY') }}</td>
+              <td class="text-xs-center">{{ props.item.identificacao }}</td>
+              <td class="text-xs-center">{{ props.item.apresentanteDocumento }}</td>
+              <td class="text-xs-center">{{ props.item.valor }}</td>
+              <td class="text-xs-center">{{ props.item.pagoAnteriormente }}</td>
+              <td class="text-xs-center">{{ Number(props.item.valor) -
+                Number(props.item.pagoAnteriormente)}}</td>
+            </tr>
           </template>
           <v-alert slot="no-results" :value="true" color="error" icon="warning">
             Nenhum pedido encontrado para o filtro:  "{{ search }}".
@@ -50,24 +52,24 @@
             <v-layout row wrap class="black--text text-xs-center">
                 <v-flex xs7>
                   <strong class="green--text headlinefont">{{selecionadoRecebimento.length}}
-                    </strong> recebimentos selecionados no total de
+                    </strong> recebimentos no total de
                     <strong class="green--text headlinefont">R$
-                      {{vlSelecionadoRecebimento.toString()}}</strong>
+                      {{vlSelecionadoRecebimento.abs().toFormat()}}</strong>
                 </v-flex>
                 <v-flex xs5>
-                  Total a receber / devolver
+                  Total a {{receberOuDevolver}}
                 </v-flex>
             </v-layout>
             <v-layout row wrap  class="black--text text-xs-center">
                 <v-flex xs7>
                   <strong class="red--text headlinefont">
                     {{selecionadoDevolucao.length}}
-                  </strong> devoluções selecionadas no total de
+                  </strong> devoluções no total de
                   <strong class="red--text headlinefont">R$
-                    {{vlSelecionadoDevolucao.toString()}}</strong>
+                    {{vlSelecionadoDevolucao.abs().toFormat()}}</strong>
                 </v-flex>
                 <v-flex xs5>
-                <strong class="green--text headline">R$ {{vlTotalGeral.toString()}}</strong>
+                <strong class="headline black--text">R$ {{vlTotalGeral.abs().toFormat()}}</strong>
                 </v-flex>
             </v-layout>
           </v-container>
@@ -94,7 +96,15 @@
 import { BigNumber } from 'bignumber.js';
 import Pagamento from './Pagamento';
 
-BigNumber.config({ DECIMAL_PLACES: 13, ROUNDING_MODE: 2 });
+BigNumber.config({
+  DECIMAL_PLACES: 13,
+  ROUNDING_MODE: 2,
+  FORMAT: {
+    groupSize: 3,
+    groupSeparator: ' ',
+    decimalSeparator: ',',
+  },
+});
 
 export default {
   components: {
@@ -109,25 +119,36 @@ export default {
   watch: {
     // eslint-disable-next-line
     selected: function () {
+      // Limpar selecionados individuais
       this.selecionadoDevolucao = [];
       this.selecionadoRecebimento = [];
+      // zerar totais
       this.vlSelecionadoRecebimento = new BigNumber(0);
       this.vlSelecionadoDevolucao = new BigNumber(0);
       this.vlTotalGeral = new BigNumber(0);
+      // Percorrer selecionados
       this.selected.forEach((pedido) => {
+        // separar os valores atual e pago anteriormente do pedido
         const valorPedidoAtual = new BigNumber(pedido.valor);
         const valorPedidoAnterior = new BigNumber(pedido.pagoAnteriormente);
-        if (valorPedidoAtual.minus(valorPedidoAnterior) < 0) {
+        const valorTotalPedido = valorPedidoAtual.minus(valorPedidoAnterior);
+        // verifica se o valor final do pedido e negativo(deve devolver)
+        if (valorTotalPedido.isNegative()) {
           this.selecionadoDevolucao.push(pedido);
           this.vlSelecionadoDevolucao =
-            this.vlSelecionadoRecebimento.plus(valorPedidoAtual.minus(valorPedidoAnterior));
+            this.vlSelecionadoDevolucao.plus(valorTotalPedido);
         } else {
           this.selecionadoRecebimento.push(pedido);
           this.vlSelecionadoRecebimento =
-            this.vlSelecionadoRecebimento.plus(valorPedidoAtual.minus(valorPedidoAnterior));
+            this.vlSelecionadoRecebimento.plus(valorTotalPedido);
         }
       });
       this.vlTotalGeral = this.vlSelecionadoRecebimento.minus(this.vlSelecionadoDevolucao.abs());
+      if( this.vlTotalGeral.isNegative() ){
+        this.receberOuDevolver = 'Devolver';
+      } else {
+        this.receberOuDevolver = 'Receber';
+      }
     },
   },
   data() {
@@ -140,6 +161,7 @@ export default {
       selected: [],
       dialog: false,
       search: '',
+      receberOuDevolver: 'Receber',
       mensagem: 'Nenhum Pedido Encontrado',
       linhasPorPagina: 'Pedidos por página',
       headers: [

@@ -1,6 +1,6 @@
 <template>
 <div>
-  {{valorTotal}}
+  {{valorTotal.toString()}}
   Saldo: {{saldo}}
   <br>
   <v-text-field v-model="valorInformado"></v-text-field>
@@ -40,6 +40,10 @@
 </div>
 </template>
 <script>
+import { BigNumber } from 'bignumber.js';
+
+BigNumber.config({ DECIMAL_PLACES: 13, ROUNDING_MODE: 2 });
+
 export default {
   created() {
     this.axios.get('/formapagamento/').then((response) => {
@@ -48,11 +52,13 @@ export default {
     // console.log(this.$store.state.count);
   },
   name: 'Pagamento',
-  props: ['valorTotal'],
+  props: {
+    valorTotal: BigNumber,
+  },
   data: () => ({
     formPagamentoSelecionada: null,
-    totalAdicionado: 0,
-    valorInformado: 0,
+    totalAdicionado: new BigNumber(0),
+    valorInformado: new BigNumber(0),
     formaPagamentoList: [],
     formPagamentoAdicionada: [],
     alert: false,
@@ -60,7 +66,7 @@ export default {
   }),
   computed: {
     saldo() {
-      return Number(this.$props.valorTotal) - Number(this.totalAdicionado);
+      return this.$props.valorTotal.minus(this.totalAdicionado);
     },
   },
   methods: {
