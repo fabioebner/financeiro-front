@@ -1,7 +1,7 @@
 <template>
 <v-container grid-list-md >
   <v-layout row wrap>
-    <v-flex xs7>
+    <v-flex xs8>
       <v-card>
         <v-card-title>
           Lista de Pedidos
@@ -90,14 +90,13 @@
     </v-dialog>
   </v-card>
   </v-flex>
-  <v-flex xs5>
+  <v-flex xs4>
       <Pagamento :valorTotal='vlTotalGeral'></Pagamento>
   </v-flex>
   </v-layout>
   </v-container>
 </template>
 <script>
-// import { BigNumber } from 'bignumber.js';
 import Pagamento from './Pagamento';
 
 export default {

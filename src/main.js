@@ -20,6 +20,7 @@ Vue.use(Vuex);
 Vue.prototype.moment = moment;
 
 // Configuracao do BigNumber
+// https://github.com/MikeMcl/bignumber.js
 BigNumber.config({
   DECIMAL_PLACES: 13,
   ROUNDING_MODE: 2,

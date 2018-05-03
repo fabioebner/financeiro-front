@@ -1,6 +1,6 @@
 <template>
 <div>
-  {{valorTotal.abs().toFormat()}}
+  {{valorTotal.abs().toFormat(2)}}
   Saldo: {{saldo.abs().toFormat()}}
   <br>
   <v-text-field v-model="vlInformado"></v-text-field>
@@ -42,8 +42,6 @@
 </div>
 </template>
 <script>
-// import { BigNumber } from 'bignumber.js';
-
 export default {
   created() {
     this.axios.get('/formapagamento/').then((response) => {
