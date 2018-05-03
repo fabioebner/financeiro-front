@@ -1,14 +1,14 @@
 <template>
 <div>
   {{valorTotal.abs().toFormat(2)}}
-  Saldo: {{saldo.abs().toFormat()}}
+  Saldo: {{saldo.abs().toFormat(2)}}
   <br>
-  <v-text-field v-model="vlInformado"></v-text-field>
+  <v-text-field v-model="vlInformado" ref="txtValorInformado"></v-text-field>
   <v-select
   :items="formaPagamentoList"
   item-text="nome"
   autocomplete
-  v-model="formPagamentoSelecionada"
+  v-model="formaPagamentoSelecionada"
   item-value="id"
   placeholder="Selecione uma Forma de Pagamento"
   single-line
@@ -20,7 +20,7 @@
       {{mensagemAlerta}}
     </v-alert>
     <v-list two-line>
-      <template v-for="(item, index) in formPagamentoAdicionada">
+      <template v-for="(item, index) in formaPagamentoAdicionada">
         <v-list-tile avatar :key="item.title" @click.stop>
           <v-list-tile-avatar>
               <v-icon class="lighten-1 white--tex" :class="{red: item.valorAdicionado.isNegative()
@@ -28,7 +28,7 @@
               monetization_on</v-icon>
             </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title v-html="item.valorAdicionado.abs()"></v-list-tile-title>
+            <v-list-tile-title v-html="item.valorAdicionado.abs().toFormat(2)"></v-list-tile-title>
             <v-list-tile-sub-title v-html="item.nome"></v-list-tile-sub-title>
           </v-list-tile-content>
             <v-list-tile-action>
@@ -54,19 +54,20 @@ export default {
     valorTotal: BigNumber,
   },
   data: () => ({
-    formPagamentoSelecionada: null,
+    formaPagamentoSelecionada: null,
     totalAdicionado: new BigNumber(0),
-    vlInformado: 0,
+    vlInformado: new BigNumber(0),
     formaPagamentoList: [],
-    formPagamentoAdicionada: [],
+    formaPagamentoAdicionada: [],
     alert: false,
     mensagemAlerta: 'favor preencher todos os campos',
   }),
   watch: {
     // eslint-disable-next-line
     valorTotal: function () {
+      // this.formaPagamentoSelecionada = this.formaPagamentoPadrao;
       this.totalAdicionado = new BigNumber(0);
-      this.formPagamentoAdicionada = [];
+      this.formaPagamentoAdicionada = [];
     },
   },
   computed: {
@@ -76,12 +77,12 @@ export default {
   },
   methods: {
     removerFormaPagamentoAdicionada(index) {
-      this.formPagamentoAdicionada.splice(index, 1);
+      this.formaPagamentoAdicionada.splice(index, 1);
       this.recalcularValor();
     },
     recalcularValor() {
       this.totalAdicionado = 0;
-      this.formPagamentoAdicionada.forEach((pagamentoAdicionado) => {
+      this.formaPagamentoAdicionada.forEach((pagamentoAdicionado) => {
         this.totalAdicionado = Number(this.totalAdicionado) +
         Number(pagamentoAdicionado.valorAdicionado);
       });
@@ -91,21 +92,23 @@ export default {
       const valorInformado = new BigNumber(this.vlInformado);
       this.alert = false;
       if (valorInformado.lte(this.saldo.abs())) {
-        if (this.formPagamentoSelecionada && (valorInformado.comparedTo(new BigNumber(0)) !== 0)) {
+        if (this.formaPagamentoSelecionada && (valorInformado.comparedTo(new BigNumber(0)) !== 0)) {
           this.formaPagamentoList.forEach((formaPagamento) => {
-            if (formaPagamento.id === this.formPagamentoSelecionada) {
+            if (formaPagamento.id === this.formaPagamentoSelecionada) {
               const novaFormaPagamento = JSON.parse(JSON.stringify(formaPagamento));
               if (this.valorTotal.isNegative()) {
                 novaFormaPagamento.valorAdicionado = valorInformado.negated();
               } else {
                 novaFormaPagamento.valorAdicionado = valorInformado;
               }
-              this.formPagamentoAdicionada.push(novaFormaPagamento);
-              this.vlInformado = 0;
-              this.formPagamentoSelecionada = null;
+              this.formaPagamentoAdicionada.push(novaFormaPagamento);
+              this.vlInformado = '';
+              this.formaPagamentoSelecionada = null;
+              this.$refs.txtValorInformado.focus();
             }
           });
           this.recalcularValor();
+          this.formaPagamentoSelecionada = this.formaPagamentoPadrao;
         } else {
           this.mensagemAlerta = 'favor preencher todos os campos';
           this.alert = true;
