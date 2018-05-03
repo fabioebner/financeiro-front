@@ -23,7 +23,8 @@
           select-all
           :rows-per-page-text="linhasPorPagina">
           <template slot="items" slot-scope="props">
-            <tr :style="{'color': ((Number(props.item.valor) - Number(props.item.pagoAnteriormente))<0) ? 'red' : 'black'}" >
+            <tr :style="{'color': ((Number(props.item.valor)
+            - Number(props.item.pagoAnteriormente))<0) ? 'red' : 'black'}" >
               <td>
                 <v-checkbox
                   primary
@@ -144,7 +145,7 @@ export default {
         }
       });
       this.vlTotalGeral = this.vlSelecionadoRecebimento.minus(this.vlSelecionadoDevolucao.abs());
-      if( this.vlTotalGeral.isNegative() ){
+      if (this.vlTotalGeral.isNegative()) {
         this.receberOuDevolver = 'Devolver';
       } else {
         this.receberOuDevolver = 'Receber';
