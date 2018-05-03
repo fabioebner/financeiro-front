@@ -94,18 +94,8 @@
   </v-container>
 </template>
 <script>
-import { BigNumber } from 'bignumber.js';
+// import { BigNumber } from 'bignumber.js';
 import Pagamento from './Pagamento';
-
-BigNumber.config({
-  DECIMAL_PLACES: 13,
-  ROUNDING_MODE: 2,
-  FORMAT: {
-    groupSize: 3,
-    groupSeparator: ' ',
-    decimalSeparator: ',',
-  },
-});
 
 export default {
   components: {

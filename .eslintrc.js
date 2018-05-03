@@ -5,6 +5,9 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint'
   },
+  globals: {
+    "BigNumber": true
+  },
   env: {
     browser: true,
   },

@@ -19,6 +19,17 @@ Vue.use(VueAxios, axios);
 Vue.use(Vuex);
 Vue.prototype.moment = moment;
 
+// Configuracao do BigNumber
+BigNumber.config({
+  DECIMAL_PLACES: 13,
+  ROUNDING_MODE: 2,
+  FORMAT: {
+    groupSize: 3,
+    groupSeparator: ' ',
+    decimalSeparator: ',',
+  },
+});
+
 router.beforeEach((to, from, next) => {
   if (to.name === 'Login') {
     next();
