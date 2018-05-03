@@ -57,7 +57,8 @@
                     <strong class="green--text headlinefont">R$
                       {{vlSelecionadoRecebimento.abs().toFormat()}}</strong>
                 </v-flex>
-                <v-flex xs5  :class="{'red--text' : vlTotalGeral.isNegative(), 'green--text': vlTotalGeral.isPositive() }">
+                <v-flex xs5  :class="{'red--text' : vlTotalGeral.isNegative(),
+                'green--text': vlTotalGeral.isPositive() }">
                   Total a {{receberOuDevolver}}
                 </v-flex>
             </v-layout>
@@ -70,7 +71,9 @@
                     {{vlSelecionadoDevolucao.abs().toFormat()}}</strong>
                 </v-flex>
                 <v-flex xs5>
-                <strong class="headline" :class="{'red--text' : vlTotalGeral.isNegative(), 'green--text': vlTotalGeral.isPositive() }">R$ {{vlTotalGeral.abs().toFormat()}}</strong>
+                <strong class="headline" :class="{'red--text' : vlTotalGeral.isNegative(),
+                'green--text': vlTotalGeral.isPositive() }">R$ {{vlTotalGeral.abs().toFormat()}}
+                </strong>
                 </v-flex>
             </v-layout>
           </v-container>
