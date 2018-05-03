@@ -4,7 +4,6 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const state = {
-  count: 5,
   bootstrap: {},
   logado: false,
 };
