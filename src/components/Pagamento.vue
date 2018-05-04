@@ -1,22 +1,32 @@
 <template>
-<div>
+<v-container fluid>
   {{valorTotal.abs().toFormat(2)}}
   Saldo: {{saldo.abs().toFormat(2)}}
   <br>
-  <v-text-field v-model="vlInformado" ref="txtValorInformado"
-  @keyup.enter='adicionarFormaPagamento'></v-text-field>
+  <v-layout row wrap>
+    <v-flex xs3>
+      <v-text-field v-model="vlInformado" ref="txtValorInformado" single-line hide-details
+        @keyup.enter='adicionarFormaPagamento' row-height="50"></v-text-field>
+    </v-flex>
+    <v-flex xs7>
   <v-select
-  :items="formaPagamentoList"
-  item-text="nome"
-  autocomplete
-  v-model="formaPagamentoSelecionada"
-  item-value="id"
-  placeholder="Selecione uma Forma de Pagamento"
-  single-line
-  ></v-select>
-  <v-btn @click="adicionarFormaPagamento">
-    Adicionar
-  </v-btn>
+    :items="formaPagamentoList"
+    item-text="nome"
+    autocomplete
+    v-model="formaPagamentoSelecionada"
+    item-value="id"
+    placeholder="Selecione uma Forma de Pagamento"
+    single-line
+    hide-details
+    >
+  </v-select>
+    </v-flex>
+  <v-flex xs2>
+    <v-btn icon @click="adicionarFormaPagamento" >
+      <v-icon>add</v-icon>
+    </v-btn>
+  </v-flex>
+  </v-layout>
     <v-alert type="error" dismissible v-model="alert">
       {{mensagemAlerta}}
     </v-alert>
@@ -40,7 +50,7 @@
         </v-list-tile>
       </template>
     </v-list>
-</div>
+</v-container>
 </template>
 <script>
 export default {
@@ -94,7 +104,7 @@ export default {
         this.totalAdicionado = Number(this.totalAdicionado) +
         Number(pagamentoAdicionado.valorAdicionado);
       });
-      this.vlInformado = this.$props.valorTotal.minus(this.totalAdicionado);
+      this.vlInformado = this.$props.valorTotal.minus(this.totalAdicionado).abs();
       this.$refs.txtValorInformado.focus();
     },
     /* eslint no-param-reassign: ["error", { "props": false }] */
@@ -130,3 +140,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .input-group {
+    padding-top: 10px;
+  }
+</style>
