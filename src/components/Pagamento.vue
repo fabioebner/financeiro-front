@@ -3,7 +3,8 @@
   {{valorTotal.abs().toFormat(2)}}
   Saldo: {{saldo.abs().toFormat(2)}}
   <br>
-  <v-text-field v-model="vlInformado" ref="txtValorInformado"></v-text-field>
+  <v-text-field v-model="vlInformado" ref="txtValorInformado"
+  @keyup.enter='adicionarFormaPagamento'></v-text-field>
   <v-select
   :items="formaPagamentoList"
   item-text="nome"
@@ -94,6 +95,7 @@ export default {
         Number(pagamentoAdicionado.valorAdicionado);
       });
       this.vlInformado = this.$props.valorTotal.minus(this.totalAdicionado);
+      this.$refs.txtValorInformado.focus();
     },
     /* eslint no-param-reassign: ["error", { "props": false }] */
     adicionarFormaPagamento() {
@@ -112,7 +114,6 @@ export default {
               this.formaPagamentoAdicionada.push(novaFormaPagamento);
               this.vlInformado = 0;
               this.formaPagamentoSelecionada = null;
-              this.$refs.txtValorInformado.focus();
             }
           });
           this.recalcularValor();

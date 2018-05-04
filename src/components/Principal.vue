@@ -89,9 +89,7 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container>
-          <router-view></router-view>
-      </v-container>
+      <router-view ></router-view>
     </v-content>
     <v-btn
       fab
