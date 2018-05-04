@@ -46,6 +46,12 @@ export default {
   created() {
     this.axios.get('/formapagamento/').then((response) => {
       this.formaPagamentoList = response.data;
+      this.formaPagamentoList.forEach((forma) => {
+        if (forma.nome === 'DINHEIRO') {
+          this.formPagamentoDefaultId = forma.id;
+          this.formaPagamentoSelecionada = this.formPagamentoDefaultId;
+        }
+      });
     });
     // console.log(this.$store.state.count);
   },
@@ -54,6 +60,7 @@ export default {
     valorTotal: BigNumber,
   },
   data: () => ({
+    formPagamentoDefaultId: 0,
     formaPagamentoSelecionada: null,
     totalAdicionado: new BigNumber(0),
     vlInformado: new BigNumber(0),
@@ -65,9 +72,9 @@ export default {
   watch: {
     // eslint-disable-next-line
     valorTotal: function () {
-      // this.formaPagamentoSelecionada = this.formaPagamentoPadrao;
       this.totalAdicionado = new BigNumber(0);
       this.formaPagamentoAdicionada = [];
+      this.recalcularValor();
     },
   },
   computed: {
@@ -86,6 +93,7 @@ export default {
         this.totalAdicionado = Number(this.totalAdicionado) +
         Number(pagamentoAdicionado.valorAdicionado);
       });
+      this.vlInformado = this.$props.valorTotal.minus(this.totalAdicionado);
     },
     /* eslint no-param-reassign: ["error", { "props": false }] */
     adicionarFormaPagamento() {
@@ -102,13 +110,13 @@ export default {
                 novaFormaPagamento.valorAdicionado = valorInformado;
               }
               this.formaPagamentoAdicionada.push(novaFormaPagamento);
-              this.vlInformado = '';
+              this.vlInformado = 0;
               this.formaPagamentoSelecionada = null;
               this.$refs.txtValorInformado.focus();
             }
           });
           this.recalcularValor();
-          this.formaPagamentoSelecionada = this.formaPagamentoPadrao;
+          this.formaPagamentoSelecionada = this.formPagamentoDefaultId;
         } else {
           this.mensagemAlerta = 'favor preencher todos os campos';
           this.alert = true;
