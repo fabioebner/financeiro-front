@@ -82,7 +82,7 @@ export default {
         // eslint-disable-next-line
         this.axios.defaults.headers.common['Authorization'] = response.headers.authorization;
         // this.$vuetify.auth = response.headers.authorization;
-        this.$router.push({ name: 'Principal' });
+        this.$router.push({ name: 'FrenteCaixa' });
         // console.log(this.$vuetify.goTo('Principal'));
       },
       ).catch((error) => {
