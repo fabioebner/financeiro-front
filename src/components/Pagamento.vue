@@ -1,3 +1,4 @@
+// https://github.com/ankurk91/vue-cleave-component
 <template>
 <v-container fluid>
   {{valorTotal.abs().toFormat(2)}}
@@ -8,29 +9,29 @@
       <v-text-field v-model="vlInformado" ref="txtValorInformado" single-line hide-details
         @keyup.enter='adicionarFormaPagamento' row-height="50"></v-text-field>
     </v-flex>
-    <v-flex xs7>
-  <v-select
-    :items="formaPagamentoList"
-    item-text="nome"
-    autocomplete
-    v-model="formaPagamentoSelecionada"
-    item-value="id"
-    placeholder="Selecione uma Forma de Pagamento"
-    single-line
-    hide-details
-    >
-  </v-select>
+    <v-flex xs8>
+      <v-select
+        :items="formaPagamentoList"
+        item-text="nome"
+        autocomplete
+        v-model="formaPagamentoSelecionada"
+        item-value="id"
+        placeholder="Selecione uma Forma de Pagamento"
+        single-line
+        hide-details
+        >
+      </v-select>
     </v-flex>
-  <v-flex xs2>
-    <v-btn icon @click="adicionarFormaPagamento" >
-      <v-icon>add</v-icon>
-    </v-btn>
-  </v-flex>
+    <v-flex xs1>
+      <v-btn icon @click="adicionarFormaPagamento" >
+        <v-icon>add</v-icon>
+      </v-btn>
+    </v-flex>
   </v-layout>
     <v-alert type="error" dismissible v-model="alert">
       {{mensagemAlerta}}
     </v-alert>
-    <v-list two-line>
+    <v-list two-line >
       <template v-for="(item, index) in formaPagamentoAdicionada">
         <v-list-tile avatar :key="item.title" @click.stop>
           <v-list-tile-avatar>
@@ -53,6 +54,8 @@
 </v-container>
 </template>
 <script>
+import { eventBus } from '../main';
+
 export default {
   created() {
     this.axios.get('/formapagamento/').then((response) => {
@@ -128,6 +131,7 @@ export default {
           });
           this.recalcularValor();
           this.formaPagamentoSelecionada = this.formPagamentoDefaultId;
+          eventBus.$emit('formaPagamentoAdicionado', this.formaPagamentoAdicionada);
         } else {
           this.mensagemAlerta = 'favor preencher todos os campos';
           this.alert = true;
