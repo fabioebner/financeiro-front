@@ -109,6 +109,9 @@
           </v-flex>
         </v-layout>
       </v-container>
+      <v-alert type="error" dismissible v-model="alertaFinalizarPedido">
+        {{mensagemAlerta}}
+      </v-alert>
     </v-flex>
     </v-layout>
   </v-container>
@@ -170,8 +173,9 @@ export default {
         nome: '',
         documento: '',
       },
-      alert: false,
-      pagamentosPedido: null,
+      alertaFinalizarPedido: false,
+      mensagemAlerta: '',
+      pagamentosPedido: [],
       selecionadoRecebimento: [],
       selecionadoDevolucao: [],
       vlSelecionadoRecebimento: new BigNumber(0),
@@ -203,8 +207,14 @@ export default {
   },
   methods: {
     finalizarMovimentacao() {
+      this.alertaFinalizarPedido = false;
       // eslint-disable-next-line
-      console.log(this.pagamentosPedido);
+      if (this.pagamentosPedido.length > 0) {
+        alert('foi');
+      } else {
+        this.alertaFinalizarPedido = true;
+        this.mensagemAlerta = 'Favor informar pelo menos 1 forma de pagamento';
+      }
     },
     setarPagamentos(pagamentos) {
       this.pagamentosPedido = pagamentos;
