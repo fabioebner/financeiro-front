@@ -98,22 +98,56 @@
             <Pagamento ref="pagamentos" :valorTotal='vlTotalGeral'></Pagamento>
           </v-flex>
         </v-layout>
-        <v-alert type="error" dismissible v-model="alert">
-          Favor informar pelo menos 1 forma de pagamento
+        <v-alert type="error" dismissible v-model="alertaFinalizarPedido">
+          {{mensagemAlerta}}
         </v-alert>
         <v-layout row wrap>
           <v-flex xs12 class="text-xs-center">
             <v-btn color="info" @click.stop="finalizarMovimentacao">Finalizar</v-btn>
-            <v-btn color="warning">Recibo</v-btn>
             <v-btn color="error">Cancelar</v-btn>
           </v-flex>
         </v-layout>
       </v-container>
-      <v-alert type="error" dismissible v-model="alertaFinalizarPedido">
-        {{mensagemAlerta}}
-      </v-alert>
     </v-flex>
     </v-layout>
+    <v-dialog v-model="reciboDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Dados do Recibo</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm12 md12>
+                <v-select
+                  :items="clientes"
+                  item-text="nome"
+                  autocomplete
+                  @change="setarCliente"
+                  v-model="movimentacao.recibo.clienteId"
+                  item-value="id"
+                  placeholder="Selecione um Cliente"
+                  single-line
+                  hide-details
+                ></v-select>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field label="Documento" v-model="movimentacao.recibo.documento">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs8>
+                <v-text-field label="Nome"  v-model="movimentacao.recibo.nome"></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click.stop="reciboDialog = false">Finalizar</v-btn>
+          <v-btn color="blue darken-1" flat @click.stop="cancelarRecibo()">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -130,10 +164,14 @@ export default {
     this.axios.get('/pedido/').then((response) => {
       self.items = response.data;
     });
+    this.axios.get('/cliente/').then((response) => {
+      self.clientes = response.data;
+    });
   },
   watch: {
     // eslint-disable-next-line
     selected: function () {
+      this.alertaFinalizarPedido = false;
       // Limpar selecionados individuais
       this.selecionadoDevolucao = [];
       this.selecionadoRecebimento = [];
@@ -168,10 +206,13 @@ export default {
   },
   data() {
     return {
-      recibo: {
-        clienteId: null,
-        nome: '',
-        documento: '',
+      reciboDialog: false,
+      movimentacao: {
+        recibo: {
+          clienteId: null,
+          nome: '',
+          documento: '',
+        },
       },
       alertaFinalizarPedido: false,
       mensagemAlerta: '',
@@ -203,14 +244,29 @@ export default {
         { text: 'Saldo (R$)', value: 'saldo', sortable: false },
       ],
       items: [],
+      clientes: [],
     };
   },
   methods: {
+    cancelarRecibo() {
+      this.movimentacao.recibo.clienteId = null;
+      this.movimentacao.recibo.nome = null;
+      this.movimentacao.recibo.documento = null;
+      this.reciboDialog = false;
+    },
+    setarCliente(id) {
+      this.clientes.forEach((cliente) => {
+        if (cliente.id === id) {
+          this.movimentacao.recibo.clienteId = id;
+          this.movimentacao.recibo.nome = cliente.nome;
+          this.movimentacao.recibo.documento = cliente.documento;
+        }
+      });
+    },
     finalizarMovimentacao() {
       this.alertaFinalizarPedido = false;
-      // eslint-disable-next-line
       if (this.pagamentosPedido.length > 0) {
-        alert('foi');
+        this.reciboDialog = true;
       } else {
         this.alertaFinalizarPedido = true;
         this.mensagemAlerta = 'Favor informar pelo menos 1 forma de pagamento';
