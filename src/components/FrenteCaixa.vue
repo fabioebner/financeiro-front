@@ -143,7 +143,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.stop="reciboDialog = false">Finalizar</v-btn>
+          <v-btn color="blue darken-1" flat @click.stop="salvarRecibo()">Finalizar</v-btn>
           <v-btn color="blue darken-1" flat @click.stop="cancelarRecibo()">Cancelar</v-btn>
         </v-card-actions>
       </v-card>
@@ -262,6 +262,23 @@ export default {
           this.movimentacao.recibo.documento = cliente.documento;
         }
       });
+    },
+    salvarRecibo() {
+      this.reciboDialog = false;
+      // eslint-disable-next-line
+      this.$set(this.movimentacao, 'pedidos', this.selected.map((pedido) => {
+        return pedido.id;
+      }));
+      this.$set(this.movimentacao, 'pagamentos', this.pagamentosPedido);
+      this.axios.post('/movimentacao/', this.movimentacao)
+        .then((response) => {
+          // eslint-disable-next-line
+          console.log(response);
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error);
+        });
     },
     finalizarMovimentacao() {
       this.alertaFinalizarPedido = false;
