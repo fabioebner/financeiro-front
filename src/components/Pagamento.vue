@@ -35,12 +35,12 @@
       <template v-for="(item, index) in formaPagamentoAdicionada">
         <v-list-tile avatar :key="item.title" @click.stop>
           <v-list-tile-avatar>
-              <v-icon class="lighten-1 white--tex" :class="{red: item.valorAdicionado.isNegative()
-              ,green: item.valorAdicionado.isPositive()}" style="{background: 'red'}">
+              <v-icon class="lighten-1 white--tex" :class="{red: item.valorInformado.isNegative()
+              ,green: item.valorInformado.isPositive()}" style="{background: 'red'}">
               monetization_on</v-icon>
             </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title v-html="item.valorAdicionado.abs().toFormat(2)"></v-list-tile-title>
+            <v-list-tile-title v-html="item.valorInformado.abs().toFormat(2)"></v-list-tile-title>
             <v-list-tile-sub-title v-html="item.nome"></v-list-tile-sub-title>
           </v-list-tile-content>
             <v-list-tile-action>
@@ -105,7 +105,7 @@ export default {
       this.totalAdicionado = 0;
       this.formaPagamentoAdicionada.forEach((pagamentoAdicionado) => {
         this.totalAdicionado = Number(this.totalAdicionado) +
-        Number(pagamentoAdicionado.valorAdicionado);
+        Number(pagamentoAdicionado.valorInformado);
       });
       this.vlInformado = this.$props.valorTotal.minus(this.totalAdicionado).abs();
       this.$refs.txtValorInformado.focus();
@@ -120,9 +120,9 @@ export default {
             if (formaPagamento.id === this.formaPagamentoSelecionada) {
               const novaFormaPagamento = JSON.parse(JSON.stringify(formaPagamento));
               if (this.valorTotal.isNegative()) {
-                novaFormaPagamento.valorAdicionado = valorInformado.negated();
+                novaFormaPagamento.valorInformado = valorInformado.negated();
               } else {
-                novaFormaPagamento.valorAdicionado = valorInformado;
+                novaFormaPagamento.valorInformado = valorInformado;
               }
               this.formaPagamentoAdicionada.push(novaFormaPagamento);
               this.vlInformado = 0;
