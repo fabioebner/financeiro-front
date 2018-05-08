@@ -276,8 +276,8 @@ export default {
           console.log(response);
         })
         .catch((error) => {
-          // eslint-disable-next-line
-          console.log(error);
+          this.alertaFinalizarPedido = true;
+          this.mensagemAlerta = JSON.parse(error.request.response).message;
         });
     },
     finalizarMovimentacao() {
