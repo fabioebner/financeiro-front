@@ -110,7 +110,8 @@
       </v-container>
     </v-flex>
     </v-layout>
-    <v-dialog v-model="reciboDialog" persistent max-width="600px">
+    <v-dialog v-model="reciboDialog" persistent max-width="600px"
+    @keydown.esc="reciboDialog = false">
       <v-card>
         <v-card-title>
           <span class="headline">Dados do Recibo</span>
