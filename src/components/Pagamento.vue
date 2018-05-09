@@ -58,6 +58,7 @@ import { eventBus } from '../main';
 
 export default {
   created() {
+    eventBus.$on('iniciarTela', this.iniciarTela);
     this.axios.get('/formapagamento/').then((response) => {
       this.formaPagamentoList = response.data;
       this.formaPagamentoList.forEach((forma) => {
@@ -97,6 +98,9 @@ export default {
     },
   },
   methods: {
+    iniciarTela() {
+      this.formaPagamentoAdicionada = [];
+    },
     removerFormaPagamentoAdicionada(index) {
       this.formaPagamentoAdicionada.splice(index, 1);
       this.recalcularValor();

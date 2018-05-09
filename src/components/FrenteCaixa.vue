@@ -149,6 +149,20 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogMovimentacaoFinalizada" max-width="400">
+      <v-card>
+        <v-card-title class="headline">Atenção</v-card-title>
+        <v-card-text>Movimentação {{movimentacaoNumero}}
+          finalizada com sucesso. Deseja imprimir o recibo?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" flat="flat"
+          @click.native="fecharTelaMovimentacaoFinalizada(true)">SIM</v-btn>
+          <v-btn color="red darken-1" flat="flat"
+          @click.native="fecharTelaMovimentacaoFinalizada(false)">NÃO</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -161,13 +175,7 @@ export default {
   },
   created() {
     eventBus.$on('formaPagamentoAdicionado', this.setarPagamentos);
-    const self = this;
-    this.axios.get('/pedido/').then((response) => {
-      self.items = response.data;
-    });
-    this.axios.get('/cliente/').then((response) => {
-      self.clientes = response.data;
-    });
+    this.iniciarTela();
   },
   watch: {
     // eslint-disable-next-line
@@ -207,6 +215,8 @@ export default {
   },
   data() {
     return {
+      dialogMovimentacaoFinalizada: false,
+      movimentacaoNumero: null,
       reciboDialog: false,
       movimentacao: {
         recibo: {
@@ -273,6 +283,8 @@ export default {
       this.$set(this.movimentacao, 'pagamentos', this.pagamentosPedido);
       this.axios.post('/movimentacao/', this.movimentacao)
         .then((response) => {
+          this.movimentacaoNumero = response.data;
+          this.dialogMovimentacaoFinalizada = true;
           // eslint-disable-next-line
           console.log(response);
         })
@@ -289,6 +301,34 @@ export default {
         this.alertaFinalizarPedido = true;
         this.mensagemAlerta = 'Favor informar pelo menos 1 forma de pagamento';
       }
+    },
+    fecharTelaMovimentacaoFinalizada(imprimirRecibo) {
+      if (imprimirRecibo) {
+        // eslint-disable-next-line
+        alert('deve imprimir o recibo');
+      }
+      this.dialogMovimentacaoFinalizada = false;
+      this.movimentacaoNumero = null;
+      this.iniciarTela();
+    },
+    iniciarTela() {
+      eventBus.$emit('iniciarTela');
+      this.selecionadoRecebimento = [];
+      this.selecionadoDevolucao = [];
+      this.vlSelecionadoRecebimento = new BigNumber(0);
+      this.vlSelecionadoDevolucao = new BigNumber(0);
+      this.vlTotalGeral = new BigNumber(0);
+
+      this.movimentacao.recibo.clienteId = null;
+      this.movimentacao.recibo.nome = '';
+      this.movimentacao.recibo.documento = '';
+      this.selected = [];
+      this.axios.get('/pedido/').then((response) => {
+        this.items = response.data;
+      });
+      this.axios.get('/cliente/').then((response) => {
+        this.clientes = response.data;
+      });
     },
     setarPagamentos(pagamentos) {
       this.pagamentosPedido = pagamentos;
