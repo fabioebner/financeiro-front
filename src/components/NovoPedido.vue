@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md text-xs-center fluid="">
-    <v-form>
+    <v-form ref="form" v-model="valid">
       <v-layout row wrap>
         <v-flex xs4 md4>
           <v-select
@@ -9,6 +9,8 @@
             item-value="cdCartorioNatureza"
             item-text="nome"
             label="Especialidade"
+            :rules="[v => !!v || 'Campo obrigatório']"
+            @change="buscarServicos"
             placeholder="Selecione uma especialidade"
             required
           ></v-select>
@@ -21,6 +23,7 @@
             :placeholder="placeholderServicos"
             item-value="id"
             item-text="nome"
+            :rules="[v => !!v || 'Campo obrigatório']"
             required
           ></v-select>
         </v-flex>
@@ -32,6 +35,7 @@
             placeholder="Selecione a forma de calculo"
             item-value="cdDivisor"
             item-text="nmDivisor"
+            :rules="[v => !!v || 'Campo obrigatório']"
             required
           ></v-select>
         </v-flex>
@@ -40,6 +44,7 @@
             v-model.number="quantidade"
             label="Quantidade"
             mask="###"
+            :rules="quantidadeRules"
           ></v-text-field>
         </v-flex>
         <v-flex xs2 md2>
@@ -51,10 +56,12 @@
         </v-flex>
         <v-flex xs2 md2>
           <v-text-field
-            v-model.number="valorBase"
-            label="Valor Base"
-            mask="###.###,##"
+            v-model.number="protocolo"
+            label="Protocolo"
           ></v-text-field>
+        </v-flex>
+        <v-flex xs2 md2>
+          <v-btn color="info" @click.stop="adicionarServico" :disabled="!valid">Adicionar</v-btn>
         </v-flex>
       </v-layout>
     </v-form>
@@ -94,6 +101,7 @@ export default {
         nome: 'Registro Civil PJ',
       },
     ],
+    valid: true,
     especialidadeSelecionada: null,
     servicos: [],
     servicoSelecionado: null,
@@ -101,7 +109,12 @@ export default {
     formaCalculoSelecionada: null,
     quantidade: 0,
     valorBase: 0,
+    protocolo: null,
     placeholderServicos: 'Selecione uma especialidade',
+    quantidadeRules: [
+      v => (v > 0) || 'Deve ser maior do que 0',
+    ],
+
   }),
   created() {
     this.axios.get('/formacalculo/').then((response) => {
@@ -109,15 +122,24 @@ export default {
     });
   },
   methods: {
+    adicionarServico() {
+      if (this.$refs.form.validate()) {
+        // eslint-disable-next-line
+        alert('foi');
+        this.$refs.form.reset();
+      }
+    },
     buscarServicos(codigo) {
-      this.axios.get(`/servico/${codigo}/`).then((response) => {
-        this.servicos = response.data.content;
-        if (response.data.totalElements > 0) {
-          this.placeholderServicos = 'Selecione um serviço';
-        } else {
-          this.placeholderServicos = 'Nenhum serviço encontrado';
-        }
-      });
+      if (codigo) {
+        this.axios.get(`/servico/${codigo}/`).then((response) => {
+          this.servicos = response.data.content;
+          if (response.data.totalElements > 0) {
+            this.placeholderServicos = 'Selecione um serviço';
+          } else {
+            this.placeholderServicos = 'Nenhum serviço encontrado';
+          }
+        });
+      }
     },
   },
 };
