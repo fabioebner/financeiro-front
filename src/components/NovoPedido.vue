@@ -6,7 +6,10 @@
           <v-select
             :items="especialidades"
             v-model="especialidadeSelecionada"
+            item-value="cdCartorioNatureza"
+            item-text="nome"
             label="Especialidade"
+            placeholder="Selecione uma especialidade"
             required
           ></v-select>
         </v-flex>
@@ -15,6 +18,9 @@
             :items="servicos"
             v-model="servicoSelecionado"
             label="Servico"
+            :placeholder="placeholderServicos"
+            item-value="id"
+            item-text="nome"
             required
           ></v-select>
         </v-flex>
@@ -47,13 +53,60 @@
 export default {
   name: 'NovoPedido',
   data: () => ({
-    especialidades: [],
+    especialidades: [
+      {
+        cdCartorioNatureza: 1,
+        nome: 'Registro de Imóveis',
+      },
+      {
+        cdCartorioNatureza: 2,
+        nome: 'Protesto',
+      },
+      {
+        cdCartorioNatureza: 3,
+        nome: 'Notas',
+      },
+      {
+        cdCartorioNatureza: 4,
+        nome: 'Firmas',
+      },
+      {
+        cdCartorioNatureza: 5,
+        nome: 'Títulos e Documentos e Pessoa Jurídica',
+      },
+      {
+        cdCartorioNatureza: 6,
+        nome: 'Registro Civil',
+      },
+      {
+        cdCartorioNatureza: 7,
+        nome: 'Registro Civil PJ',
+      },
+    ],
     especialidadeSelecionada: null,
     servicos: [],
     servicoSelecionado: null,
     quantidade: 0,
     valorBase: 0,
+    placeholderServicos: 'Selecione uma especialidade',
   }),
+  watch: {
+    especialidadeSelecionada(codigo) {
+      this.buscarServicos(codigo);
+    },
+  },
+  methods: {
+    buscarServicos(codigo) {
+      this.axios.get(`/servico/${codigo}/`).then((response) => {
+        this.servicos = response.data.content;
+        if (response.data.totalElements > 0) {
+          this.placeholderServicos = 'Selecione um serviço';
+        } else {
+          this.placeholderServicos = 'Nenhum serviço encontrado';
+        }
+      });
+    },
+  },
 };
 </script>
 
