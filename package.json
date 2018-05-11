@@ -20,7 +20,7 @@
     "vue": "^2.5.2",
     "vue-axios": "^2.1.1",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.0.15",
+    "vuetify": "^1.0.17",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
