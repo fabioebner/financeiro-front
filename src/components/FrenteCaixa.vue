@@ -122,7 +122,9 @@
               <v-flex xs12 sm12 md12>
                 <v-select
                   :items="clientes"
+                  :autofocus="true"
                   item-text="nome"
+                  ref="comboCliente"
                   autocomplete
                   @change="setarCliente"
                   v-model="movimentacao.recibo.clienteId"
@@ -134,11 +136,10 @@
                   :rules="[() => movimentacao.recibo.clienteId != null
                   || 'You must choose at least one']"
                   :search-input.sync="searchCliente"
-                   cache-items
                 ></v-select>
               </v-flex>
               <v-flex xs4>
-                <v-text-field label="Documento" v-model="movimentacao.recibo.documento">
+                <v-text-field label="Documento"  v-model="movimentacao.recibo.documento">
                 </v-text-field>
               </v-flex>
               <v-flex xs8>
@@ -272,9 +273,6 @@ export default {
   },
   methods: {
     cancelarRecibo() {
-      this.movimentacao.recibo.clienteId = null;
-      this.movimentacao.recibo.nome = null;
-      this.movimentacao.recibo.documento = null;
       this.reciboDialog = false;
     },
     setarCliente(id) {
