@@ -24,6 +24,17 @@
             required
           ></v-select>
         </v-flex>
+        <v-flex xs4 md4>
+          <v-select
+            :items="formaCalculos"
+            v-model="formaCalculoSelecionada"
+            label="Forma de calculo"
+            placeholder="Selecione a forma de calculo"
+            item-value="cdDivisor"
+            item-text="nmDivisor"
+            required
+          ></v-select>
+        </v-flex>
         <v-flex xs2 md2>
           <v-text-field
             v-model.number="quantidade"
@@ -86,14 +97,16 @@ export default {
     especialidadeSelecionada: null,
     servicos: [],
     servicoSelecionado: null,
+    formaCalculos: [],
+    formaCalculoSelecionada: null,
     quantidade: 0,
     valorBase: 0,
     placeholderServicos: 'Selecione uma especialidade',
   }),
-  watch: {
-    especialidadeSelecionada(codigo) {
-      this.buscarServicos(codigo);
-    },
+  created() {
+    this.axios.get('/formacalculo/').then((response) => {
+      this.formaCalculos = response.data;
+    });
   },
   methods: {
     buscarServicos(codigo) {
