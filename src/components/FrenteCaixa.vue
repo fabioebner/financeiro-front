@@ -129,7 +129,12 @@
                   item-value="id"
                   placeholder="Selecione um Cliente"
                   single-line
+                  loading="loadingCliente"
                   hide-details
+                  :rules="[() => movimentacao.recibo.clienteId != null
+                  || 'You must choose at least one']"
+                  :search-input.sync="searchCliente"
+                   cache-items
                 ></v-select>
               </v-flex>
               <v-flex xs4>
@@ -170,6 +175,7 @@ import Pagamento from './Pagamento';
 import { eventBus } from '../main';
 
 export default {
+  name: 'FrenteCaixa',
   components: {
     Pagamento,
   },
@@ -178,6 +184,10 @@ export default {
     this.iniciarTela();
   },
   watch: {
+    searchCliente(val) {
+      // eslint-disable-next-line
+      val && this.querySelections(val);
+    },
     // eslint-disable-next-line
     selected: function () {
       this.alertaFinalizarPedido = false;
@@ -236,6 +246,8 @@ export default {
       selected: [],
       dialog: false,
       search: '',
+      searchCliente: null,
+      loadingCliente: false,
       receberOuDevolver: 'Receber',
       mensagem: 'Nenhum Pedido Encontrado',
       linhasPorPagina: 'Pedidos por página',
@@ -326,12 +338,15 @@ export default {
       this.axios.get('/pedido/').then((response) => {
         this.items = response.data;
       });
-      this.axios.get('/cliente/').then((response) => {
-        this.clientes = response.data;
-      });
     },
     setarPagamentos(pagamentos) {
       this.pagamentosPedido = pagamentos;
+    },
+    querySelections(v) {
+      this.loadingCliente = true;
+      this.axios.get(`/cliente/?nome=${v}`).then((response) => {
+        this.clientes = response.data.content;
+      });
     },
   },
 };

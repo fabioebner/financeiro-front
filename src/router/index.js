@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Login from '@/components/Login';
 import Principal from '@/components/Principal';
 import FrenteCaixa from '@/components/FrenteCaixa';
+import NovoPedido from '@/components/NovoPedido';
 
 Vue.use(Router);
 
@@ -18,6 +19,11 @@ export default new Router({
           path: 'frentecaixa',
           name: 'FrenteCaixa',
           component: FrenteCaixa,
+        },
+        {
+          path: 'novoPedido',
+          name: 'NovoPedido',
+          component: NovoPedido,
         },
       ],
     },

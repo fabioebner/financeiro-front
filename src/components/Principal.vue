@@ -119,7 +119,7 @@ export default {
     items: [
       { icon: 'contacts', text: 'Frente de Caixa', component: 'FrenteCaixa' },
       { icon: 'history', text: 'Expedição', component: 'Login' },
-      { icon: 'content_copy', text: '2º Via de Recibos' },
+      { icon: 'content_copy', text: '2º Via de Recibos', component: 'NovoPedido' },
       { icon: 'money_off', text: 'Adicionar Despesas' },
       {
         icon: 'keyboard_arrow_up',
