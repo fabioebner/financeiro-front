@@ -20,6 +20,7 @@
             :items="servicos"
             v-model="servicoSelecionado"
             label="Servico"
+            ref="servicos"
             :placeholder="placeholderServicos"
             item-value="id"
             item-text="nome"
@@ -44,6 +45,7 @@
             v-model.number="quantidade"
             label="Quantidade"
             mask="###"
+            required
             :rules="quantidadeRules"
           ></v-text-field>
         </v-flex>
@@ -52,6 +54,7 @@
             v-model.number="valorBase"
             label="Valor Base"
             mask="###.###,##"
+            required
           ></v-text-field>
         </v-flex>
         <v-flex xs2 md2>
@@ -61,7 +64,7 @@
           ></v-text-field>
         </v-flex>
         <v-flex xs2 md2>
-          <v-btn color="info" @click.stop="adicionarServico" :disabled="!valid">Adicionar</v-btn>
+          <v-btn color="info" @click.stop="verificarProtocolo" :disabled="!valid">Adicionar</v-btn>
         </v-flex>
       </v-layout>
     </v-form>
@@ -104,6 +107,7 @@ export default {
     valid: true,
     especialidadeSelecionada: null,
     servicos: [],
+    servicosAdicionados: [],
     servicoSelecionado: null,
     formaCalculos: [],
     formaCalculoSelecionada: null,
@@ -124,9 +128,29 @@ export default {
   methods: {
     adicionarServico() {
       if (this.$refs.form.validate()) {
-        // eslint-disable-next-line
-        alert('foi');
-        this.$refs.form.reset();
+        const novoServico = {
+          idServico: this.servicoSelecionado,
+          valorInformado: this.valorBase,
+          quantidade: this.quantidade,
+          divisorId: this.formaCalculoSelecionada,
+          quantidadeDivisor: 0,
+        };
+        this.axios.post('/servico/calcular/', novoServico)
+          .then((response) => {
+            this.servicosAdicionados.push(response.data);
+            this.$refs.form.reset();
+          });
+      }
+    },
+    verificarProtocolo() {
+      if (this.servicoSelecionado && this.protocolo) {
+        this.axios.get(`/protocolo/${this.servicoSelecionado}/${this.protocolo}/`).then((response) => {
+          if (response.data) {
+            alert('possui');
+          } else {
+            this.adicionarServico();
+          }
+        });
       }
     },
     buscarServicos(codigo) {
@@ -138,6 +162,7 @@ export default {
           } else {
             this.placeholderServicos = 'Nenhum serviço encontrado';
           }
+          this.$refs.servicos.focus();
         });
       }
     },
