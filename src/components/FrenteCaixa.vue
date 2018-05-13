@@ -122,7 +122,6 @@
               <v-flex xs12 sm12 md12>
                 <v-select
                   :items="clientes"
-                  :autofocus="true"
                   item-text="nome"
                   ref="comboCliente"
                   autocomplete
@@ -138,12 +137,13 @@
                   :search-input.sync="searchCliente"
                 ></v-select>
               </v-flex>
-              <v-flex xs4>
-                <v-text-field label="Documento"  v-model="movimentacao.recibo.documento">
-                </v-text-field>
-              </v-flex>
               <v-flex xs8>
-                <v-text-field label="Nome"  v-model="movimentacao.recibo.nome"></v-text-field>
+                <v-text-field label="Nome" ref="reciboNome"
+                  v-model="movimentacao.recibo.nome"></v-text-field>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field label="Documento" v-model="movimentacao.recibo.documento">
+                </v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -172,6 +172,7 @@
   </v-container>
 </template>
 <script>
+import Vue from 'vue';
 import Pagamento from './Pagamento';
 import { eventBus } from '../main';
 
@@ -283,6 +284,10 @@ export default {
           this.movimentacao.recibo.documento = cliente.documento;
         }
       });
+      const me = this;
+      Vue.nextTick(() => {
+        me.$refs.reciboNome.focus();
+      });
     },
     salvarRecibo() {
       this.reciboDialog = false;
@@ -307,6 +312,13 @@ export default {
       this.alertaFinalizarPedido = false;
       if (this.pagamentosPedido.length > 0) {
         this.reciboDialog = true;
+        this.movimentacao.recibo.clienteId = null;
+        this.movimentacao.recibo.nome = null;
+        this.movimentacao.recibo.documento = null;
+        const me = this;
+        Vue.nextTick(() => {
+          me.$refs.reciboNome.focus();
+        });
       } else {
         this.alertaFinalizarPedido = true;
         this.mensagemAlerta = 'Favor informar pelo menos 1 forma de pagamento';
