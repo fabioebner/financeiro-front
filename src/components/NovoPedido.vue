@@ -98,56 +98,50 @@
                 </v-card-title>
                 <v-divider></v-divider>
                 <v-list dense>
-                  <v-list-tile v-if="props.item.nmCustas1">
-                    <v-list-tile-content>{{ props.item.nmCustas1}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas1 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas2">
-                    <v-list-tile-content>{{ props.item.nmCustas2}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas2 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas3">
-                    <v-list-tile-content>{{ props.item.nmCustas3}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas3 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas4">
-                    <v-list-tile-content>{{ props.item.nmCustas4}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas4 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas5">
-                    <v-list-tile-content>{{ props.item.nmCustas5}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas5 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas6">
-                    <v-list-tile-content>{{ props.item.nmCustas6}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas6 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas7">
-                    <v-list-tile-content>{{ props.item.nmCustas7}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas7 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas8">
-                    <v-list-tile-content>{{ props.item.nmCustas8}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas8}}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas9">
-                    <v-list-tile-content>{{ props.item.nmCustas9}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas9 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile v-if="props.item.nmCustas10">
-                    <v-list-tile-content>{{ props.item.nmCustas10}}</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas10 }}
-                    </v-list-tile-content>
-                  </v-list-tile>
+                  <v-container fluid grid-list-md text-xs-center>
+                    <v-layout row wrap>
+                      <v-flex xs4 class="caption">
+                        {{ props.item.nmCustas1}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas1 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas2" class="caption">
+                        {{ props.item.nmCustas2}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas2 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas3" class="caption">
+                        {{ props.item.nmCustas3}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas3 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas4" class="caption">
+                        {{ props.item.nmCustas4}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas4 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas5" class="caption">
+                        {{ props.item.nmCustas5}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas5 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas6" class="caption">
+                        {{ props.item.nmCustas6}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas6 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas7" class="caption">
+                        {{ props.item.nmCustas7}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas7 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas8" class="caption">
+                        {{ props.item.nmCustas8}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas8 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas9" class="caption">
+                        {{ props.item.nmCustas9}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas9 }}
+                      </v-flex>
+                      <v-flex xs4 v-if="props.item.nmCustas10" class="caption">
+                        {{ props.item.nmCustas10}}<v-spacer></v-spacer>
+                        R$: {{ props.item.vlTotalCustas10 }}
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
                 </v-list>
                  <v-card-actions>
                 <v-spacer></v-spacer>
