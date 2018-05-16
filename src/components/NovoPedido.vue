@@ -22,7 +22,7 @@
             label="Servico"
             ref="servicos"
             :placeholder="placeholderServicos"
-            item-value="id"
+            item-value="value"
             item-text="nome"
             :rules="[v => !!v || 'Campo obrigatório']"
             required
@@ -66,14 +66,111 @@
         <v-flex xs2 md2>
           <v-btn color="info" @click.stop="verificarProtocolo" :disabled="!valid">Adicionar</v-btn>
         </v-flex>
+        <v-flex xs12 md12>
+          <v-data-iterator
+            :items="servicosAdicionados"
+            :rows-per-page-items="rowsPerPageItems"
+            :pagination.sync="pagination"
+            content-tag="v-layout"
+            no-data-text="Nenhum serviço adicionado"
+            row
+            wrap
+          >
+            <v-flex
+                slot="item"
+                slot-scope="props"
+                xs12
+                sm6
+                md4
+                lg3
+              >
+
+              <v-card>
+                <v-card-title>
+                  <h4>{{props.item.calculoTabela[0].qtd}} - {{ props.item.nomeServico }}</h4>
+                  <v-spacer></v-spacer>
+                  <v-tooltip bottom>
+                    <v-btn small icon ripple slot="activator" @click="removerServico(props.index)">
+                      <v-icon color="grey lighten-1">clear</v-icon>
+                    </v-btn>
+                    <span>Remover Serviço</span>
+                  </v-tooltip>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-list dense>
+                  <v-list-tile v-if="props.item.nmCustas1">
+                    <v-list-tile-content>{{ props.item.nmCustas1}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas1 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas2">
+                    <v-list-tile-content>{{ props.item.nmCustas2}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas2 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas3">
+                    <v-list-tile-content>{{ props.item.nmCustas3}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas3 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas4">
+                    <v-list-tile-content>{{ props.item.nmCustas4}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas4 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas5">
+                    <v-list-tile-content>{{ props.item.nmCustas5}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas5 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas6">
+                    <v-list-tile-content>{{ props.item.nmCustas6}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas6 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas7">
+                    <v-list-tile-content>{{ props.item.nmCustas7}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas7 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas8">
+                    <v-list-tile-content>{{ props.item.nmCustas8}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas8}}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas9">
+                    <v-list-tile-content>{{ props.item.nmCustas9}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas9 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile v-if="props.item.nmCustas10">
+                    <v-list-tile-content>{{ props.item.nmCustas10}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ props.item.vlTotalCustas10 }}
+                    </v-list-tile-content>
+                  </v-list-tile>
+                </v-list>
+                 <v-card-actions>
+                <v-spacer></v-spacer>
+                    <div class="green--text">Total R$ {{props.item.vlTotalCustas10}}</div>
+              </v-card-actions>
+              </v-card>
+            </v-flex>
+          </v-data-iterator>
+        </v-flex>
       </v-layout>
     </v-form>
   </v-container>
 </template>
 <script>
+import Vue from 'vue';
+
 export default {
   name: 'NovoPedido',
   data: () => ({
+    rowsPerPageItems: [4, 8, 12],
+    pagination: {
+      rowsPerPage: 3,
+    },
     especialidades: [
       {
         cdCartorioNatureza: 1,
@@ -107,7 +204,56 @@ export default {
     valid: true,
     especialidadeSelecionada: null,
     servicos: [],
-    servicosAdicionados: [],
+    servicosAdicionados: [
+      {
+        nmCustas1: 'Cartorio',
+        nomeServico: 'Compra e venda',
+        nmCustas2: 'FDJ',
+        nmCustas3: 'FRMP',
+        nmCustas4: 'FCRCPN',
+        nmCustas5: 'ISS',
+        nmCustas6: 'PGE',
+        nmCustas7: null,
+        nmCustas8: null,
+        nmCustas9: null,
+        nmCustas10: null,
+        vlDesconto: 0,
+        valor: 3,
+        qtd: 1,
+        calculoTabela: [
+          {
+            nmTabela: '1A',
+            divisor: '50% das custas do cartorio',
+            codigo: null,
+            vlBase: 3,
+            qtd: 12,
+            data: '15/05/2018',
+            custas1: 1207.32,
+            custas2: 0,
+            custas3: 0,
+            custas4: 120.72,
+            custas5: 30.18,
+            custas6: 48.96,
+            custas7: 0,
+            custas8: 0,
+            custas9: 0,
+            custas10: 1407.18,
+          },
+        ],
+        cdFormaCalculo: 103,
+        vlTotalCustas1: 1207.32,
+        vlTotalCustas2: 0,
+        vlTotalCustas3: 0,
+        vlTotalCustas4: 120.72,
+        vlTotalCustas5: 30.18,
+        vlTotalCustas6: 48.96,
+        vlTotalCustas7: 0,
+        vlTotalCustas8: 0,
+        vlTotalCustas9: 0,
+        vlTotalCustas10: 1407.18,
+        tabelaCustas: '1A',
+      },
+    ],
     servicoSelecionado: null,
     formaCalculos: [],
     formaCalculoSelecionada: null,
@@ -129,7 +275,7 @@ export default {
     adicionarServico() {
       if (this.$refs.form.validate()) {
         const novoServico = {
-          idServico: this.servicoSelecionado,
+          idServico: this.servicoSelecionado.id,
           valorInformado: this.valorBase,
           quantidade: this.quantidade,
           divisorId: this.formaCalculoSelecionada,
@@ -137,21 +283,28 @@ export default {
         };
         this.axios.post('/servico/calcular/', novoServico)
           .then((response) => {
-            this.servicosAdicionados.push(response.data);
-            this.$refs.form.reset();
+            const servicoCalculado = JSON.parse(JSON.stringify(response.data));
+            Vue.set(servicoCalculado, 'nomeServico', this.servicoSelecionado.nome);
+
+            this.servicosAdicionados.push(servicoCalculado);
+            // this.$refs.form.reset();
           });
       }
     },
     verificarProtocolo() {
       if (this.servicoSelecionado && this.protocolo) {
-        this.axios.get(`/protocolo/${this.servicoSelecionado}/${this.protocolo}/`).then((response) => {
+        this.axios.get(`/protocolo/${this.servicoSelecionado.id}/${this.protocolo}/`).then((response) => {
           if (response.data) {
+            // eslint-disable-next-line
             alert('possui');
           } else {
             this.adicionarServico();
           }
         });
       }
+    },
+    removerServico(index) {
+      this.servicosAdicionados.splice(index, 1);
     },
     buscarServicos(codigo) {
       if (codigo) {
