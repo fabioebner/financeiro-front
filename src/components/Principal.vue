@@ -91,7 +91,7 @@
     <v-content>
       <router-view ></router-view>
     </v-content>
-    <v-btn
+    <!-- <v-btn
       fab
       bottom
       right
@@ -102,6 +102,7 @@
     >
       <v-icon>add</v-icon>
     </v-btn>
+    -->
   </v-app>
 </template>
 
